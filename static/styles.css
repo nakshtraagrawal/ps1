@@ -1,0 +1,56 @@
+body {
+  margin: 0;
+  font-family: Arial, sans-serif;
+  background: #0f172a;
+  color: #e2e8f0;
+}
+
+.container {
+  max-width: 900px;
+  margin: 24px auto;
+  padding: 0 16px;
+}
+
+.card {
+  background: #111827;
+  border: 1px solid #1f2937;
+  border-radius: 10px;
+  padding: 14px;
+  margin-bottom: 14px;
+}
+
+.row {
+  display: flex;
+  gap: 8px;
+  margin: 8px 0;
+}
+
+button {
+  background: #2563eb;
+  border: none;
+  color: white;
+  padding: 8px 12px;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+#status {
+  color: #93c5fd;
+  margin-bottom: 8px;
+}
+
+.result {
+  font-size: 18px;
+  line-height: 1.4;
+}
+
+#result strong {
+  color: #e0f2fe;
+}
+
+#spectrogram {
+  width: 100%;
+  max-width: 700px;
+  display: block;
+}
+

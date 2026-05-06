@@ -1,0 +1,9 @@
+fastapi
+uvicorn
+numpy
+scipy
+librosa
+soundfile
+python-multipart
+jinja2
+matplotlib

@@ -1,0 +1,43 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Audio Identification</title>
+    <link rel="stylesheet" href="/static/styles.css" />
+  </head>
+  <body>
+    <main class="container">
+      <h1>Audio Identification System</h1>
+      <p>Upload or record ~10s clip and identify best match.</p>
+
+      <section class="card">
+        <input id="audioFile" type="file" accept=".wav,.mp3,audio/wav,audio/mpeg" />
+        <div class="row">
+          <button id="recordBtn" type="button">Record 10s</button>
+          <button id="identifyBtn" type="button">Identify</button>
+        </div>
+        <label for="threshold">Confidence Threshold</label>
+        <input id="threshold" type="range" min="0" max="0.8" step="0.01" value="0.1" />
+        <div id="thresholdText">0.10</div>
+      </section>
+
+      <section class="card">
+        <h2>Waveform</h2>
+        <canvas id="waveform" width="700" height="150"></canvas>
+      </section>
+
+      <section class="card">
+        <h2>Spectrogram</h2>
+        <img id="spectrogram" alt="spectrogram" />
+      </section>
+
+      <section class="card">
+        <div id="status"></div>
+        <div id="result" class="result"></div>
+      </section>
+    </main>
+    <script src="/static/app.js"></script>
+  </body>
+</html>
+
