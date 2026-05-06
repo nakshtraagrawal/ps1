@@ -58,6 +58,8 @@ def _load_json(json_path: Path) -> list[dict[str, object]]:
 
 def _fallback_records(dataset_dir: Path) -> list[dict[str, object]]:
     rows: list[dict[str, object]] = []
+    if not dataset_dir.exists():
+        return rows
     for genre_dir in sorted(dataset_dir.iterdir()):
         if not genre_dir.is_dir():
             continue

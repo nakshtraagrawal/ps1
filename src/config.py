@@ -1,0 +1,47 @@
+"""Project configuration facade module."""
+
+from __future__ import annotations
+
+from src.audioid.config import (
+    APP_DIR,
+    DATASET_DIR,
+    DEFAULT_CONFIDENCE_THRESHOLD,
+    FAN_OUT,
+    HOP_LENGTH,
+    INDEX_PATH,
+    MAX_QUERY_SECONDS,
+    METADATA_CSV_PATH,
+    METADATA_JSON_PATH,
+    MIN_ALIGNED_HASHES,
+    MIN_QUERY_SECONDS,
+    N_FFT,
+    PEAK_MIN_DB,
+    PEAK_NEIGHBORHOOD,
+    SAMPLE_RATE,
+    SILENCE_RMS_THRESHOLD,
+    TARGET_FREQ_BINS,
+    TARGET_TIME_BINS,
+    WINDOW,
+)
+
+__all__ = [
+    "APP_DIR",
+    "DATASET_DIR",
+    "METADATA_CSV_PATH",
+    "METADATA_JSON_PATH",
+    "INDEX_PATH",
+    "SAMPLE_RATE",
+    "N_FFT",
+    "HOP_LENGTH",
+    "WINDOW",
+    "PEAK_NEIGHBORHOOD",
+    "PEAK_MIN_DB",
+    "FAN_OUT",
+    "TARGET_TIME_BINS",
+    "TARGET_FREQ_BINS",
+    "MIN_QUERY_SECONDS",
+    "MAX_QUERY_SECONDS",
+    "SILENCE_RMS_THRESHOLD",
+    "MIN_ALIGNED_HASHES",
+    "DEFAULT_CONFIDENCE_THRESHOLD",
+]

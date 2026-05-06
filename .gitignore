@@ -1,8 +1,11 @@
 data/raw/dataset/
 data/processed/
 __pycache__/
+.mypy_cache/
+.ruff_cache/
 *.pyc
 *.pyo
 *.pyd
+*.egg-info/
 *.jpeg
 *.jpg

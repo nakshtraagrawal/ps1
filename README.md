@@ -9,9 +9,9 @@
 
 #### Describe your approach here. Keep it short and clear.
 
-    - We ingest song metadata (song_id, title, artist, duration, genre) from CSV/JSON with validation; bad rows are logged and skipped. Audio is standardized to mono 11025 Hz, transformed with Hann-window STFT (4096 FFT, 50% overlap), then converted into constellation peaks and packed 32-bit hashes (f_anchor, f_target, dt) for compact storage.
-    - Matching uses inverted-index retrieval plus time-offset histogram voting: for each candidate, we compute dt = song_offset - query_offset for all hash hits and select the strongest histogram spike. Confidence is spike_height / total_matched_hashes with thresholds (aligned_hashes > 5 and confidence > 0.4) to reduce false positives.
-    - Scalability is achieved through hash-table indexing (hash -> [(song_id, time_offset)]) with O(1) lookup per hash, persisted index snapshots for instant startup, and stateless read-only query execution that supports concurrent requests.
-    - Robustness and latency are handled by strict query validation (format, duration, RMS silence), deterministic feature extraction shared by offline and online paths, per-stage latency timing (extract/match/total), and graceful handling of corrupt files instead of pipeline crashes.
+    - Phase 1 (offline indexing): ingest metadata from CSV/JSON with validation and skip-on-error handling, decode each track to mono PCM at 11025 Hz, compute Hann-window STFT (4096 FFT, 50% overlap), perform 2D peak picking, and generate packed 32-bit fingerprint hashes from (f_anchor, f_target, dt).
+    - Phase 2 (online query): run the exact same extraction interface on 3-10 second snippets, retrieve candidate hits through an inverted index (hash -> [(song_id, time_offset)]), and compute per-song offset histograms where true matches form a sharp alignment spike.
+    - Matching heuristic: choose the candidate with strongest histogram peak and score confidence as spike_height / total_matched_hashes; classify strict match with thresholds (aligned_hashes > 5 and confidence > 0.4), while still returning closest candidate metadata for low-confidence cases.
+    - System design for scale and reliability: O(1) hash lookup with prebuilt serialized index for low latency, stateless read-heavy query path suitable for concurrent requests, per-stage latency telemetry (extract/match/total), strict query validation (silence/length/format), and graceful handling of corrupt dataset files.
 
 **Note:** Please do not change the format or spelling of anything in this README. The fields are extracted using a script, so any changes to the structure or formatting may break the extraction process.

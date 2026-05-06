@@ -19,6 +19,7 @@ from fastapi.staticfiles import StaticFiles
 from src.audioid.config import APP_DIR, DEFAULT_CONFIDENCE_THRESHOLD, SAMPLE_RATE
 from src.audioid.fingerprint import log_spectrogram
 from src.audioid.service import AudioIdentifierService
+from src.health import build_health_status
 
 app = FastAPI(title="Audio Identification System")
 app.mount("/static", StaticFiles(directory=str(APP_DIR / "static")), name="static")
@@ -37,7 +38,7 @@ async def home() -> FileResponse:
 
 @app.get("/health")
 async def health() -> dict[str, object]:
-    return {"ready": service.ready, "index_loaded": bool(service.payload)}
+    return build_health_status(payload=service.payload, ready=service.ready)
 
 
 @app.post("/identify")
