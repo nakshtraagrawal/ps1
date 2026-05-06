@@ -8,10 +8,11 @@ from typing import Any
 import numpy as np
 import soundfile as sf
 
-from .config import INDEX_PATH, SAMPLE_RATE
+from .config import INDEX_PATH, MAX_QUERY_SECONDS, SAMPLE_RATE
 from .fingerprint import fingerprint
 from .indexer import build_index, load_index, save_index
 from .matcher import match_query
+from .metadata import load_song_records
 from .preprocessing import load_audio_standard
 from .query_validation import validate_query
 
@@ -22,12 +23,22 @@ class AudioIdentifierService:
         self.ready = False
 
     def load_or_build(self) -> None:
+        expected_song_count = self._expected_song_count()
         if INDEX_PATH.exists():
             self.payload = load_index()
+            indexed_song_count = len(self.payload.get("songs", {}))
+            # Auto-recover from accidental partial indexes (e.g., built with --limit).
+            if indexed_song_count < max(1, expected_song_count // 2):
+                self.payload = build_index()
+                save_index(self.payload)
         else:
             self.payload = build_index()
             save_index(self.payload)
         self.ready = True
+
+    def _expected_song_count(self) -> int:
+        records, _ = load_song_records()
+        return len(records)
 
     def identify_file(self, file_path: Path, threshold: float) -> dict[str, Any]:
         try:
@@ -47,6 +58,7 @@ class AudioIdentifierService:
     def identify_signal(self, signal, sr: int, threshold: float) -> dict[str, Any]:
         start = time.perf_counter()
         signal, sr = load_audio_standard_signal(signal, sr)
+        signal, was_trimmed = trim_query_to_max_duration(signal=signal, sr=sr)
         ok, reason = validate_query(signal, sr)
         if not ok:
             return {
@@ -69,6 +81,7 @@ class AudioIdentifierService:
             "matching": round((t_match_end - t_match_start) * 1000, 2),
             "total": round((time.perf_counter() - start) * 1000, 2),
         }
+        result["query_trimmed"] = was_trimmed
         return result
 
 
@@ -82,4 +95,12 @@ def load_audio_standard_signal(signal, sr: int):
         signal = librosa.resample(signal, orig_sr=sr, target_sr=SAMPLE_RATE).astype(np.float32)
         sr = SAMPLE_RATE
     return signal, sr
+
+
+def trim_query_to_max_duration(signal: np.ndarray, sr: int) -> tuple[np.ndarray, bool]:
+    """Clamp long inputs to max query length for robust identification."""
+    max_samples = int(MAX_QUERY_SECONDS * sr)
+    if len(signal) <= max_samples:
+        return signal, False
+    return signal[:max_samples], True
 

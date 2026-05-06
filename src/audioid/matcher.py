@@ -41,9 +41,12 @@ def match_query(
     if best_song_id is None:
         return {"matched": False, "reason": "No Match Found", "confidence": 0.0}
 
-    # Core confidence heuristic from offset-histogram matching:
-    # histogram peak height divided by all matched hashes.
-    confidence = best_offset_peak / max(1, total_hits)
+    # Confidence calibration:
+    # - query_coverage rewards how much of query aligns to one song/offset
+    # - peak_dominance penalizes diffuse/noisy candidate alignments
+    query_coverage = best_offset_peak / max(1, len(query_hashes))
+    peak_dominance = best_offset_peak / max(1, best_song_total_hits)
+    confidence = 0.7 * query_coverage + 0.3 * peak_dominance
 
     meta = songs[best_song_id]
     matched = best_offset_peak > MIN_ALIGNED_HASHES and confidence >= confidence_threshold
