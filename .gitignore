@@ -9,3 +9,4 @@ __pycache__/
 *.egg-info/
 *.jpeg
 *.jpg
+!docs/*.jpeg

@@ -26,7 +26,7 @@
 
 ### Visual Pipeline Snapshot
 
-![Architecture Pipeline Diagram](<WhatsApp Image 2026-05-06 at 12.51.25 PM.jpeg>)
+![Architecture Pipeline Diagram](docs/architecture-diagram.jpeg)
 
 | Stage | Input | Processing | Output |
 |---|---|---|---|
